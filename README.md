@@ -1,30 +1,15 @@
-# React + TypeScript + Vite
+# CS5170-GPT-React-Workshop
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Follow along workshop for CS5170
 
-Currently, two official plugins are available:
+To install necessary software go the project root folders for both the frontend and server folders, and enter: `npm i`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Enter the server folder, and run `npm install -g nodemon`
 
-## Expanding the ESLint configuration
+Enter your OPENAI api key in the corresponding server file.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+First run the server with `nodemon index.js` from the server folder.
 
-- Configure the top-level `parserOptions` property like this:
+Then, from a different terminal window, run the frontend with `npm run dev` from the frontend folder.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+NOTE: Your editor may show errors when using `react-hook-form` in a couple of the components, such as: `Module '"react-hook-form"' has no exported member 'useForm'.` This should not prevent the code from running, and can be ignored.

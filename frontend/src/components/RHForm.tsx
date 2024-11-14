@@ -3,7 +3,7 @@
  * It contains how to make a React Hook Form with input field validation.
  * @author Christopher Curtis
  */
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -16,21 +16,22 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
-interface Props {
-  onSubmit: (data: FormData) => void;
-}
-
 /**
  * Creates a React Hook Form, with fields as defined in the above schema.
  * @returns a React-Hook-Form component
  */
-const RHForm = ({ onSubmit }: Props) => {
+const RHForm = () => {
   // These variables are used for interacting with the form's state
   const {
     register, // Tracks the form fields
     handleSubmit, // Calls the on-submit logic
     formState: { errors, isValid }, // Tracks errors and wether or not the form is valid
   } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  // Handles the on-submit logic for the form
+  const onSubmit = (data: FieldValues) => {
+    console.log(data);
+  };
 
   // We return the react markup needed for the component
   return (
@@ -49,9 +50,7 @@ const RHForm = ({ onSubmit }: Props) => {
       </div>
 
       <div className="mb-3">
-        <label htmlFor="age" className="form-label">
-          Age
-        </label>
+        <label htmlFor="age" className="form-label"></label>
         <input
           {...register("age", { valueAsNumber: true })}
           id="age"

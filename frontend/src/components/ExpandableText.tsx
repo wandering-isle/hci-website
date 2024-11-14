@@ -1,9 +1,3 @@
-/**
- * This class is included for reference.
- * It contains how to make an expandable text wrapper.
- * @author Christopher Curtis
- */
-
 import { useState } from "react";
 
 // Defines the fields for the component

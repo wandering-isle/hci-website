@@ -9,9 +9,8 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 // Defines the fields for the component
 interface Props {
   color: string;
-  status?: boolean;
   size?: number;
-  onClick: () => void;
+  onClick: () => boolean;
 }
 
 /**
@@ -21,17 +20,16 @@ interface Props {
  * @param onClick on-click function
  * @returns like button
  */
-const Like = ({ color, status = false, size = 40, onClick }: Props) => {
+const Like = ({ color, size = 40, onClick }: Props) => {
   // Tracks the state of the component, we only track wether to show the icon as filled or not
-  const [isLiked, setIsLiked] = useState(status);
+  const [status, setStatus] = useState(false);
   const toggle = () => {
-    setIsLiked(!isLiked);
+    setStatus(!status);
     onClick();
   };
 
   // We return the react markup needed for the component
-  if (isLiked)
-    return <AiFillHeart color={color} onClick={toggle} size={size} />;
+  if (status) return <AiFillHeart color={color} onClick={toggle} size={size} />;
   return <AiOutlineHeart color={color} onClick={toggle} size={size} />;
 };
 
