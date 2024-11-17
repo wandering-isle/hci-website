@@ -1,18 +1,18 @@
-.uploadAndCopy {
+/* .uploadAndCopy {
     outline-style:solid;
     outline:10px;
     display:flex;
     padding:10px;
     border: 3px solid blue;
     justify-content: space-around;
-}
+} */
 
-.audio-recorder {
+/* .audio-recorder {
     margin: 20px;
     text-align: center;
   }
-  
-  .audio-recorder button {
+   */
+  /* .audio-recorder button {
     padding: 10px 20px;
     font-size: 16px;
     background-color: #007bff;
@@ -20,8 +20,8 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
+  } */
+/*   
   .audio-recorder button:hover {
     background-color: #0056b3;
   }
@@ -29,4 +29,4 @@
   .audio-recorder audio {
     margin-top: 10px;
   }
-  
+   */

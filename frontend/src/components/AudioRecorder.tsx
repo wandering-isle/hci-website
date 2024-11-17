@@ -5,12 +5,16 @@ const AudioRecorder: React.FC = () => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null); // To manage MediaRecorder
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]); // To store recorded audio
   const [audioUrl, setAudioUrl] = useState<string | null>(null); // To save and preview audio
+  const [transcriptions, setTranscriptions] = useState<string[]>([]); // State for transcriptions
+  const [currentTranscript, setCurrentTranscript] = useState(""); // State for current transcript input
 
   const handleToggleRecording = async () => {
     if (!isRecording) {
       // Start recording
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
         setAudioChunks([]); // Reset audio chunks
@@ -31,7 +35,9 @@ const AudioRecorder: React.FC = () => {
       // Stop recording
       if (mediaRecorderRef.current) {
         mediaRecorderRef.current.stop();
-        mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
+        mediaRecorderRef.current.stream
+          .getTracks()
+          .forEach((track) => track.stop());
         setIsRecording(false);
 
         // Create a Blob from recorded audio chunks
@@ -43,23 +49,41 @@ const AudioRecorder: React.FC = () => {
   };
 
   return (
-    <div className="audio-recorder">
-      <h3>Audio Recorder</h3>
-      <button onClick={handleToggleRecording}>
+    <div className="w-full max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <h3 className="text-xl font-semibold text-gray-800 mb-4">
+        Audio Recorder
+      </h3>
+      <button
+        onClick={handleToggleRecording}
+        className={`px-4 py-2 items-center rounded-md text-white font-medium ${
+          isRecording
+            ? "bg-red-500 hover:bg-red-600"
+            : "bg-blue-500 hover:bg-blue-600"
+        } focus:outline-none focus:ring focus:ring-offset-2 ${
+          isRecording ? "focus:ring-red-400" : "focus:ring-blue-400"
+        }`}
+      >
         {isRecording ? "Stop Recording" : "Start Recording"}
       </button>
 
       {audioUrl && (
-        <div>
-          <h4>Recorded Audio:</h4>
-          <audio controls>
+        <div className="mt-6">
+          <h4 className="text-lg font-medium text-gray-700 mb-2">
+            Recorded Audio:
+          </h4>
+          <audio controls className="w-full">
             <source src={audioUrl} type="audio/webm" />
             Your browser does not support the audio element.
           </audio>
-          <br />
-          <a href={audioUrl} download="recording.webm">
-            Download Audio
-          </a>
+          <div className="mt-4">
+            <a
+              href={audioUrl}
+              download="recording.webm"
+              className="inline-block px-4 py-2 text-sm font-medium text-blue-500 hover:text-blue-600 underline"
+            >
+              Download Audio
+            </a>
+          </div>
         </div>
       )}
     </div>
@@ -67,8 +91,6 @@ const AudioRecorder: React.FC = () => {
 };
 
 export default AudioRecorder;
-
-
 
 // import React, { useState, useRef } from "react";
 

@@ -1,0 +1,12 @@
+.transcription-item {
+    margin-bottom: 10px;
+  }
+  
+  .transcription-item textarea {
+    width: 100%;
+    height: 60px;
+  }
+  
+  .audio-recorder button {
+    margin-top: 5px;
+  }
