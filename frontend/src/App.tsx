@@ -23,7 +23,7 @@ function App() {
     <div>
       {(imgIsLoading || textIsLoading) && <div className="spinner-border" />}
       <ChatRoom />
-      <div> <Upload /> <Copy />
+      <div className="uploadAndCopy"> <Upload /> <Copy />
       </div>
       <br />
       

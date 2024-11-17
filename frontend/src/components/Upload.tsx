@@ -1,8 +1,10 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useState, useRef } from 'react';
 import { createFileService } from '../services/backend-service';
+
 
 function Upload() {
   const [file, setFile] = useState<File>();
+  const uploadRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -38,8 +40,12 @@ function Upload() {
 
   return (
     <div id="upload_div">
-      <input type="file" onChange={handleFileChange} />
-      <div>{file && `${file.name} - ${file.type}`}</div>
+      Upload a text file:
+      
+      <button onClick={() => uploadRef.current?.click()}>
+        {file ? `${file.name}` : "Select"}
+      </button>
+      <input ref = {uploadRef} type="file" onChange={handleFileChange} style={{ display: 'none' }}/>
     </div>
   );
 }
