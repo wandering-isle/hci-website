@@ -16,6 +16,7 @@ function Upload() {
       // Only if no upload already exists
       let upload_section = document.getElementById("upload_div");
       if (upload_section) {
+        // Create upload button
         let new_button = document.createElement("button");
         new_button.id = "upload_click";
         new_button.onclick = handleUploadClick;
@@ -25,17 +26,26 @@ function Upload() {
     }
   };
 
+  // How to respond if a file is uploaded
   const handleUploadClick = () => {
     if (!file) {
       return;
     }
 
+    // Send the file to the server to be cleaned
     const { request, cancel } = createFileService().post({ body: file });
-
-    request.then((res) => UpdateText(res.data));
+    // Update the text box
+    request.then((res) => UpdateText(res.data)); // UpdateText does not exist yet.
   };
 
   return (
+    // Create the grouping to contain upload file and submit file.
+    /* <div for grouping
+          <label for section>
+          <button to add a new file> This triggers the hidden input
+          <actual file input> hidden so this works with a button press
+       >
+    */
     <div
       id="upload_div"
       className="flex flex-row items-center space-x-4 p-4 bg-white"
