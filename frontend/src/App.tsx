@@ -4,6 +4,8 @@ import QueryBox from "./components/QueryBox";
 import QueryForm from "./components/QueryForm";
 import ChatRoom from "./components/ChatRoom";
 import Upload from "./components/Upload";
+import Copy from "./components/Copy";
+
 import useImage from "./hooks/useImage";
 import useText from "./hooks/useText";
 import { useEffect } from "react";
@@ -21,7 +23,7 @@ function App() {
     <div>
       {(imgIsLoading || textIsLoading) && <div className="spinner-border" />}
       <ChatRoom />
-      <div> <Upload />
+      <div> <Upload /> <Copy />
       </div>
       <br />
       
