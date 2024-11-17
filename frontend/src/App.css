@@ -6,3 +6,27 @@
     border: 3px solid blue;
     justify-content: space-around;
 }
+
+.audio-recorder {
+    margin: 20px;
+    text-align: center;
+  }
+  
+  .audio-recorder button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .audio-recorder button:hover {
+    background-color: #0056b3;
+  }
+  
+  .audio-recorder audio {
+    margin-top: 10px;
+  }
+  

@@ -5,6 +5,7 @@ import QueryForm from "./components/QueryForm";
 import ChatRoom from "./components/ChatRoom";
 import Upload from "./components/Upload";
 import Copy from "./components/Copy";
+import AudioRecorder from "./components/AudioRecord";
 
 import useImage from "./hooks/useImage";
 import useText from "./hooks/useText";
@@ -22,6 +23,7 @@ function App() {
   return (
     <div>
       {(imgIsLoading || textIsLoading) && <div className="spinner-border" />}
+      <AudioRecorder />
       <ChatRoom />
       <div className="uploadAndCopy"> <Upload /> <Copy />
       </div>
