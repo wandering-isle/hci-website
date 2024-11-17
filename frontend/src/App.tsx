@@ -3,6 +3,7 @@ import "./App.css";
 import QueryBox from "./components/QueryBox";
 import QueryForm from "./components/QueryForm";
 import ChatRoom from "./components/ChatRoom";
+import Upload from "./components/Upload";
 import useImage from "./hooks/useImage";
 import useText from "./hooks/useText";
 import { useEffect } from "react";
@@ -19,24 +20,14 @@ function App() {
   return (
     <div>
       {(imgIsLoading || textIsLoading) && <div className="spinner-border" />}
-      {!imgIsLoading && !textIsLoading && (
-        <ImageCaptionDisplay img={image} caption={text} />
-      )}
-      <br />
-      <QueryBox />
-      <br />
-      <QueryForm />
-      <br />
       <ChatRoom />
+      <div> <Upload />
+      </div>
       <br />
+      
+      
     </div>
   );
 }
 
 export default App;
-
-/**
- * <QueryForm />
-      <br />
-      <ChatRoom />
- */

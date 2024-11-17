@@ -127,4 +127,8 @@ const createJsonService = () => {
     return new HttpService("/json");
 }
 
-export {createJsonService, createResponseService, createCustomChatService,createDumbService ,createParentalService, createExpertResponseService, createLikeService, createSampleImageService, createImageService, postPayload, createService, createRudeService };
+const createFileService = () => {
+    return new HttpService("/file");
+}
+
+export {createJsonService, createResponseService, createCustomChatService,createDumbService ,createParentalService, createExpertResponseService, createLikeService, createSampleImageService, createImageService, postPayload, createService, createRudeService, createFileService };
