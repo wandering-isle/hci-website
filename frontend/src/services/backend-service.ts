@@ -62,73 +62,10 @@ class HttpService {
     }
 }
 
-/**
- * Creates a connection for unmodfied chat interactions.
- * @returns new HttpService object to the default response route.
- */
-const createResponseService = () => {
-    return new HttpService("/response");
-}
 
-/**
- * Creates a connection for parentally controlled interactions.
- * @returns new HttpService object to the parental route.
- */
-const createParentalService = () => {
-    return new HttpService("/parental");
-}
-
-/**
- * Creates a connection for gpt interactions with specific domain knowledge.
- * @returns new HttpService object to the expert route.
- */
-const createExpertResponseService = () => {
-    return new HttpService("/expert");
-}
-
-const createImageService = () => {
-    return new HttpService("/image");
-}
-
-const createSampleImageService = () => {
-    return new HttpService("/sample-image");
-}
-
-const createService = (type: ServiceCategory) => {
-    return new HttpService("/" + type);
-}
-
-const postPayload = (type: ServiceCategory, payload: Message[]) => {
-    const {request, cancel} = createService(type).postMessages(payload);
-    return { request, cancel };
-}
-
-/**
- * Creates a connection for sending user "likes".
- * @returns new HttpService object to the "like" route.
- */
-const createLikeService = () => {
-    return new HttpService("/like");
-}
-
-const createRudeService = () => {
-    return new HttpService("/rude");
-}
-
-const createDumbService = () => {
-    return new HttpService("/dumb");
-}
-
-const createCustomChatService = () => {
-    return new HttpService("/custom-image-chat");
-}
-
-const createJsonService = () => {
-    return new HttpService("/json");
-}
 
 const createFileService = () => {
     return new HttpService("/file");
 }
 
-export {createJsonService, createResponseService, createCustomChatService,createDumbService ,createParentalService, createExpertResponseService, createLikeService, createSampleImageService, createImageService, postPayload, createService, createRudeService, createFileService };
+export { createFileService };
