@@ -54,6 +54,7 @@ const AudioRecorder: React.FC = () => {
         Audio Recorder
       </h3>
       <button
+        id = "recorderButton"
         onClick={handleToggleRecording}
         className={`px-4 py-2 items-center rounded-md text-white font-medium ${
           isRecording
