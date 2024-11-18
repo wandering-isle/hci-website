@@ -19,6 +19,10 @@ function App() {
     console.log(text);
   }, [text]);
 
+  document.addEventListener("keydown",() => {
+    console.log("key pressed");
+  });
+
 
   return (
     <div>

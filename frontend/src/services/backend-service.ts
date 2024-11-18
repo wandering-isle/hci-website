@@ -68,4 +68,16 @@ const createFileService = () => {
     return new HttpService("/file");
 }
 
-export { createFileService };
+const createImageService = () => {
+    return new HttpService("/image");
+}
+
+const createSampleImageService = () => {
+    return new HttpService("/sample-image");
+}
+
+const createService = (type: ServiceCategory) => {
+    return new HttpService("/" + type);
+}
+
+export {createImageService, createService, createFileService, createSampleImageService };
