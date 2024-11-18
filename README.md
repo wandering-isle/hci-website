@@ -4,7 +4,7 @@ Final project for HCI
 
 To install necessary software go the project root folders for both the frontend and server folders, and enter: `npm i`
 
-Enter the server folder, and run `npm install -g nodemon`
+Enter the server folder, and run `npm install -g nodemon` and `npm install -D tailwindcss postcss autoprefixer vite`
 
 Enter your OPENAI api key in the corresponding server file.
 
