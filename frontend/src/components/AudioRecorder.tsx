@@ -1,31 +1,46 @@
 import React, { useState, useRef } from "react";
+import RecordRTC from 'recordrtc'
+
+const convertBlob = async (blob:Blob) => {
+  return new Promise<string | ArrayBuffer | null>((resolve) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result)
+    reader.readAsDataURL(blob)
+  });
+}
+
 
 const AudioRecorder: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false); // to track recording state
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null); // to manage MediaRecorder
+  const mediaRecorderRef = useRef<RecordRTC | null>(null); // to manage MediaRecorder
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]); // to store recorded audio
   const [audioUrl, setAudioUrl] = useState<string | null>(null); // to save and preview audio
   const [transcriptions, setTranscriptions] = useState<string[]>([]); // state for transcriptions
   const [currentTranscript, setCurrentTranscript] = useState(""); // state for current transcript input
 
+   
   const handleToggleRecording = async () => {
     if (!isRecording) {
       // Start recording
       try {
+
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
         });
-        const mediaRecorder = new MediaRecorder(stream);
-        mediaRecorderRef.current = mediaRecorder;
+        
+        // Prepare to record audio as WAV
+        const mediaRecorder = new RecordRTC(stream, {
+          mimeType: 'audio/wav',
+          recorderType: RecordRTC.StereoAudioRecorder
+        });
+
+        mediaRecorderRef.current = mediaRecorder
+      
         setAudioChunks([]); // reset audio chunks
 
-        mediaRecorder.ondataavailable = (event) => {
-          if (event.data.size > 0) {
-            setAudioChunks((prev) => [...prev, event.data]);
-          }
-        };
-
-        mediaRecorder.start();
+        
+        mediaRecorder.reset();
+        mediaRecorder.startRecording();
         setIsRecording(true);
       } catch (error) {
         console.error("Error accessing microphone:", error);
@@ -34,16 +49,29 @@ const AudioRecorder: React.FC = () => {
     } else {
       // Stop recording
       if (mediaRecorderRef.current) {
-        mediaRecorderRef.current.stop();
-        mediaRecorderRef.current.stream
-          .getTracks()
-          .forEach((track) => track.stop());
+        mediaRecorderRef.current.stopRecording(function() {
+          // Handle on-stop
+          const blob = mediaRecorderRef.current.getBlob();
+          setAudioChunks((prev) => [...prev, blob]);
+          convertBlob(blob).then((url:string|ArrayBuffer|null) => {
+            if (typeof url === "string") {
+              setAudioUrl(url);
+              document.getElementById("audio")?.setAttribute("src",url);
+            } else {
+              console.error("Error converting audio blob to url");
+            }
+            
+            // TODO: Handle results from server
+            // Currently in a AudioURL format that can be put in a JSON
+            // Then interpreted on the server
+          });
+        });
         setIsRecording(false);
 
         // create a Blob from recorded audio chunks
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        const audioPreviewUrl = URL.createObjectURL(audioBlob);
-        setAudioUrl(audioPreviewUrl); // save audio for preview or download
+        //const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        //const audioPreviewUrl = URL.createObjectURL(audioBlob);
+        //setAudioUrl(audioPreviewUrl); // save audio for preview or download
       }
     }
   };
@@ -72,8 +100,8 @@ const AudioRecorder: React.FC = () => {
           <h4 className="text-lg font-medium text-gray-700 mb-2">
             Recorded Audio:
           </h4>
-          <audio controls className="w-full">
-            <source src={audioUrl} type="audio/webm" />
+          <audio id="audio" controls className="w-full">
+            <source id="audio_source" src={audioUrl} type="audio/wav" />
             Your browser does not support the audio element.
           </audio>
           <div className="mt-4">

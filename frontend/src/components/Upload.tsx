@@ -32,8 +32,10 @@ function Upload() {
       return;
     }
 
+    let formData = new FormData();
+    formData.append("file",file);
     // Send the file to the server to be cleaned
-    const { request, cancel } = createFileService().post({ body: file });
+    const { request, cancel } = createFileService().post({ body: formData });
     // Update the text box
     request.then((res) => UpdateText(res.data)); // UpdateText does not exist yet.
   };
