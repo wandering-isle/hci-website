@@ -51,7 +51,8 @@ const AudioRecorder: React.FC = () => {
       if (mediaRecorderRef.current) {
         mediaRecorderRef.current.stopRecording(function() {
           // Handle on-stop
-          const blob = mediaRecorderRef.current.getBlob();
+          const blob = mediaRecorderRef.current?.getBlob();
+          if (blob) {
           setAudioChunks((prev) => [...prev, blob]);
           convertBlob(blob).then((url:string|ArrayBuffer|null) => {
             if (typeof url === "string") {
@@ -65,6 +66,9 @@ const AudioRecorder: React.FC = () => {
             // Currently in a AudioURL format that can be put in a JSON
             // Then interpreted on the server
           });
+          } else {
+            console.error("")
+          };
         });
         setIsRecording(false);
 

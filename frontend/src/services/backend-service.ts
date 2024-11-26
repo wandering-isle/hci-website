@@ -65,7 +65,17 @@ class HttpService {
 
 
 const createFileService = () => {
+    // Handles audio or text files, turns them into texts
+    // Input: {"type":text or audio, "content":file}
+    // Output: {"content":text}
     return new HttpService("/file");
+}
+
+const createAudioService = () => {
+    // Handles audio URL, turns into texts
+    // Input {"content":audio}
+    // Output: {"content":text}
+    return new HttpService("/audio");
 }
 
 const createImageService = () => {
