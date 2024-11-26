@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import RecordRTC from 'recordrtc'
+import RecordRTC from 'recordrtc';
 
 const convertBlob = async (blob:Blob) => {
   return new Promise<string | ArrayBuffer | null>((resolve) => {
