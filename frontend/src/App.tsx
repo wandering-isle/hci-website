@@ -4,6 +4,7 @@ import "./App.css";
 import Upload from "./components/Upload";
 import Copy from "./components/Copy";
 import AudioRecorder from "./components/AudioRecorder";
+import Integration from "./components/Integration";
 
 import useImage from "./hooks/useImage";
 import useText from "./hooks/useText";
@@ -46,17 +47,7 @@ function App() {
   return (
     <div>
       {(imgIsLoading || textIsLoading) && <div className="spinner-border" />}
-      <AudioRecorder />
-      <ChatContainer>
-        <ChatBox text="Hello I'm Saki" />
-        <ChatBox text="Hello I'm Saki" />
-        <ChatBox text="Hello I'm Saki" />
-        <ChatBox text="Hello I'm Saki" />
-      </ChatContainer>
-      <div className="flex justify-evenly items-center">
-        <Upload />
-        <Copy />
-      </div>
+      <Integration />
     </div>
   );
 }
