@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import RecordRTC from 'recordrtc';
+import { createAudioService } from "../services/backend-service";
 
 const convertBlob = async (blob:Blob) => {
   return new Promise<string | ArrayBuffer | null>((resolve) => {
@@ -65,6 +66,8 @@ const AudioRecorder: React.FC = () => {
             // TODO: Handle results from server
             // Currently in a AudioURL format that can be put in a JSON
             // Then interpreted on the server
+            const { request, cancel } = createAudioService().post({"content":url})
+            request.then((res) => console.log(res.data.content));
           });
           } else {
             console.error("")

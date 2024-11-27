@@ -90,4 +90,4 @@ const createService = (type: ServiceCategory) => {
     return new HttpService("/" + type);
 }
 
-export {createImageService, createService, createFileService, createSampleImageService };
+export {createImageService, createService, createFileService, createSampleImageService, createAudioService };
