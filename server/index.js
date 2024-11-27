@@ -5,7 +5,7 @@ import {getGptResonse }from './openaiService.js';
 
 import sdk from 'microsoft-cognitiveservices-speech-sdk' // audio->text
 
-const CORRECTIVE_CONTEXT = [{"role": "system", "content": "The following text may have incorrect words. Replace any words with more likely words based on context."}]
+const CORRECTIVE_CONTEXT = [{"role": "system", "content": "The following is a transcription of a person's speech. Correct any word that is blatantly incorrect"}]
 
 var counter = 0;
 
@@ -29,6 +29,7 @@ async function getCorrectiveResponse(text) {
  		{role: "user", content: text}
 	]
 	const response = await getGptResonse(newMessages);
+	console.log(response.choices[0].message);
 	return response.choices[0].message.content;
 }
 
@@ -88,10 +89,10 @@ const audioToText = async(audio_url, callback) => {
 app.post("/audio", async (req, res) => {
 	
 	if (req.body.params.content) {
-		let callback = (text) => {
+		let callback = async (text) => {
 			console.log(text);
-			//let reply = getCorrectiveResponse(text);
-			res.send({"content":text})
+			let reply = await getCorrectiveResponse(text);
+			res.send({"content":reply})
 		}
 
 		audioToText(req.body.params.content, callback);
