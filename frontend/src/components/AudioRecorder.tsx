@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import RecordRTC from 'recordrtc';
 import { createAudioService } from "../services/backend-service";
+import ChatBox, { ChatContainer } from "./ChatBox";
 
 const convertBlob = async (blob:Blob) => {
   return new Promise<string | ArrayBuffer | null>((resolve) => {
@@ -11,20 +12,17 @@ const convertBlob = async (blob:Blob) => {
 }
 
 
-const AudioRecorder: React.FC = () => {
+const AudioRecorder: React.FC <{ onAddTranscription: (text: string) => void }> = ({ onAddTranscription }) => {
   const [isRecording, setIsRecording] = useState(false); // to track recording state
   const mediaRecorderRef = useRef<RecordRTC | null>(null); // to manage MediaRecorder
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]); // to store recorded audio
   const [audioUrl, setAudioUrl] = useState<string | null>(null); // to save and preview audio
-  const [transcriptions, setTranscriptions] = useState<string[]>([]); // state for transcriptions
-  const [currentTranscript, setCurrentTranscript] = useState(""); // state for current transcript input
 
    
   const handleToggleRecording = async () => {
     if (!isRecording) {
       // Start recording
       try {
-
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
         });
@@ -38,7 +36,6 @@ const AudioRecorder: React.FC = () => {
         mediaRecorderRef.current = mediaRecorder
       
         setAudioChunks([]); // reset audio chunks
-
         
         mediaRecorder.reset();
         mediaRecorder.startRecording();
@@ -50,35 +47,26 @@ const AudioRecorder: React.FC = () => {
     } else {
       // Stop recording
       if (mediaRecorderRef.current) {
-        mediaRecorderRef.current.stopRecording(function() {
-          // Handle on-stop
+        mediaRecorderRef.current.stopRecording(async () => {
           const blob = mediaRecorderRef.current?.getBlob();
           if (blob) {
-          setAudioChunks((prev) => [...prev, blob]);
-          convertBlob(blob).then((url:string|ArrayBuffer|null) => {
+            setAudioChunks((prev) => [...prev, blob]);
+            const url = await convertBlob(blob);
             if (typeof url === "string") {
               setAudioUrl(url);
-              document.getElementById("audio")?.setAttribute("src",url);
-            } else {
-              console.error("Error converting audio blob to url");
+
+              const { request } = createAudioService().post({ content: url });
+              request.then((res) => {
+                onAddTranscription(res.data.content); // Add transcription to the beginning of the list
+                console.log(res.data.content)
+              })
+              .catch((error) => {
+                console.error("Error fetching transcription:", error);
+            });
             }
-            
-            // TODO: Handle results from server
-            // Currently in a AudioURL format that can be put in a JSON
-            // Then interpreted on the server
-            const { request, cancel } = createAudioService().post({"content":url})
-            request.then((res) => console.log(res.data.content));
-          });
-          } else {
-            console.error("")
-          };
+          }
         });
         setIsRecording(false);
-
-        // create a Blob from recorded audio chunks
-        //const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        //const audioPreviewUrl = URL.createObjectURL(audioBlob);
-        //setAudioUrl(audioPreviewUrl); // save audio for preview or download
       }
     }
   };

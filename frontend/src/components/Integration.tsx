@@ -8,6 +8,15 @@ import React, { useState, useRef } from "react";
 function Integration() {
     const mediaRecorderRef = useRef<RecordRTC | null>(null);
 
+    const [transcriptions, setTranscriptions] = useState<string[]>([]);
+
+    const handleAddTranscription = (newTranscription: string) => {
+      setTranscriptions((prev) => {
+        const updated = [newTranscription, ...prev];
+        return updated;
+      });
+    };
+
     // TODO: On audio stop, send audio request
     // TODO: When get audio request, add chatbox
     // TODO: When file uploaded, send file request
@@ -17,12 +26,11 @@ function Integration() {
     return (
       // Creates a button that copies the ChatBox content.
       <div>
-      <AudioRecorder />
+      <AudioRecorder onAddTranscription={handleAddTranscription}/>
       <ChatContainer>
-        <ChatBox text="Hello I'm Saki" />
-        <ChatBox text="Hello I'm Saki" />
-        <ChatBox text="Hello I'm Saki" />
-        <ChatBox text="Hello I'm Saki" />
+        {transcriptions.map((text, index) => (
+          <ChatBox key={`${text}-${index}`} text={text} />
+        ))}
       </ChatContainer>
       <div className="flex justify-evenly items-center">
         <Upload />
