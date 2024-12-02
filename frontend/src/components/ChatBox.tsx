@@ -1,4 +1,9 @@
-import { AiOutlineCopy, AiOutlineEdit, AiOutlineCheck } from "react-icons/ai";
+import {
+  AiOutlineCopy,
+  AiOutlineEdit,
+  AiOutlineCheck,
+  AiOutlineDelete,
+} from "react-icons/ai";
 import { useState } from "react";
 
 export const ChatContainer = ({ children }: { children: React.ReactNode }) => {
@@ -9,7 +14,15 @@ export const ChatContainer = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const ChatBox = ({ text }: { text: string }) => {
+const ChatBox = ({
+  text,
+  index,
+  onDeleteChat,
+}: {
+  text: string;
+  index: number;
+  onDeleteChat: (index: number) => void;
+}) => {
   const [isEditing, setIsEditing] = useState(false); // Track editing mode
   const [currentText, setCurrentText] = useState(text); // Track current text value
 
@@ -20,6 +33,10 @@ const ChatBox = ({ text }: { text: string }) => {
   const handleSave = () => {
     setIsEditing(false); // Exit editing mode
     // Optionally: Save changes to a server or parent state
+  };
+
+  const handleDelete = (index: number) => {
+    onDeleteChat(index);
   };
 
   return (
@@ -65,6 +82,15 @@ const ChatBox = ({ text }: { text: string }) => {
             <AiOutlineEdit size={20} />
           </button>
         )}
+
+        {/* Delete Button */}
+        <button
+          className="w-10 h-10 rounded-full bg-red-500 text-white shadow-lg flex justify-center items-center hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
+          onClick={() => handleDelete(index)}
+          title="Delete Chat"
+        >
+          <AiOutlineDelete size={20} />
+        </button>
       </div>
     </div>
   );

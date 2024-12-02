@@ -17,6 +17,10 @@ function Integration() {
       });
     };
 
+    const handleDeleteTranscription = (index: number) => {
+      setTranscriptions((prev) => prev.filter((_, i) => i !== index));
+    };
+
     // TODO: On audio stop, send audio request
     // TODO: When get audio request, add chatbox
     // TODO: When file uploaded, send file request
@@ -33,7 +37,12 @@ function Integration() {
       <div>
         <ChatContainer>
           {transcriptions.map((text, index) => (
-            <ChatBox key={`${text}-${index}`} text={text} />
+            <ChatBox
+            key={`${text}-${index}`}
+            text={text}
+            index={index}
+            onDeleteChat={handleDeleteTranscription}
+          />
           ))}
         </ChatContainer>
       </div>
