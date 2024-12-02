@@ -1,8 +1,19 @@
-function Copy() {
+function Copy({ transcriptions }: { transcriptions: string[] }) {
 
   const copyTextBoxes = () => {
-    // TODO: Scrape the text versions of all the text and return it.
-    navigator.clipboard.writeText("Placeholder text for functionality");
+    // Combine all transcriptions into a single string with line breaks
+    const textToCopy = transcriptions.join("\n");
+
+    // Copy the combined string to the clipboard
+    navigator.clipboard
+      .writeText(textToCopy)
+      .then(() => {
+        alert("Transcriptions copied to clipboard!");
+      })
+      .catch((error) => {
+        console.error("Failed to copy text: ", error);
+        alert("Failed to copy transcriptions to clipboard.");
+      });
   };
 
   return (
