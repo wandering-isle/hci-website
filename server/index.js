@@ -2,6 +2,9 @@ import express from'express';
 import cors from "cors";
 import fs from 'fs';
 import {getGptResonse }from './openaiService.js';
+import multer from 'multer';
+import ffmpeg from 'fluent-ffmpeg';
+
 
 import sdk from 'microsoft-cognitiveservices-speech-sdk' // audio->text
 
@@ -10,6 +13,8 @@ const CORRECTIVE_CONTEXT = [{"role": "system", "content": "This text was transcr
 var counter = 0;
 
 const app = express();  // Server is instantiated
+
+const upload = multer({ dest: 'uploads/' });
 
 // These options enable us to dump json payloads and define the return signal
 const corsOptions = {
@@ -83,8 +88,6 @@ const audioToText = async(audio_url, callback) => {
 
 };
 
-
-
 // The actual post request for image and audio GPT processing
 app.post("/audio", async (req, res) => {
 	
@@ -103,17 +106,70 @@ app.post("/audio", async (req, res) => {
 });
 
 // The actual post request for image and audio GPT processing
-app.post("/file", async (req, res) => {
-	// TODO: Identify if text or audio
-	// For text, read file and return content
-	// For audio, convert into text, then return
-	if (req.body.params.content && req.body.params.type) {
-		res.send({"content":"Test FILE content"})
-	} else {
-		res.send({"content":"Failed to interpret"})
-	}
-});
+// app.post("/file", async (req, res) => {
+// 	// TODO: Identify if text or audio
+// 	// For text, read file and return content
+// 	// For audio, convert into text, then return
+// 	if (req.body.params.content && req.body.params.type) {
+// 		res.send({"content":"Test FILE content"})
+// 	} else {
+// 		res.send({"content":"Failed to interpret"})
+// 	}
+// });
 
+app.post("/file", upload.single("file"), (req, res) => {
+	if (!req.file) {
+	  return res.status(400).send("No file uploaded.");
+	}
+  
+	const filePath = req.file.path; // The uploaded file's path
+	const fileType = req.file.mimetype; // The uploaded file's MIME type
+  
+	console.log("Uploaded file details:", req.file);
+	console.log("File MIME type:", fileType);
+  
+	// Handle Text Files
+	if (fileType === "text/plain" || fileType === "text/csv") {
+	  fs.readFile(filePath, "utf8", (err, data) => {
+		fs.unlinkSync(filePath); // Clean up the file
+		if (err) {
+		  console.error("Error reading text file:", err);
+		  return res.status(500).send("Error processing text file.");
+		}
+		res.json({ content: data });
+	  });
+	} 
+	// Handle Audio/WebM Files
+	else if (fileType === "audio/webm" || fileType === "video/webm" || fileType.startsWith("audio/")) {
+	  const wavPath = `${filePath}.wav`;
+	  ffmpeg(filePath)
+		.toFormat("wav")
+		.on("end", () => {
+		  fs.unlinkSync(filePath); // Clean up original file
+		  const wavFile = fs.readFileSync(wavPath);
+		  const wavBase64 = wavFile.toString("base64");
+		  const audio_url = `data:audio/wav;base64,${wavBase64}`;
+  
+		  // Use the audioToText function
+		  audioToText(audio_url, (text) => {
+			fs.unlinkSync(wavPath); // Clean up WAV file
+			res.json({ content: text });
+		  });
+		})
+		.on("error", (err) => {
+		  console.error("Error converting audio:", err);
+		  res.status(500).send("Error processing audio file.");
+		})
+		.save(wavPath);
+	} 
+	// Handle Unsupported File Types
+	else {
+	  console.error("Unsupported file type:", fileType);
+	  fs.unlinkSync(filePath); // Clean up unsupported files
+	  res.status(400).send(`Unsupported file type: ${fileType}`);
+	}
+  });
+  
 // We define the port to listen on, and do so
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
