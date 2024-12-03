@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import RecordRTC from 'recordrtc';
 import { createAudioService } from "../services/backend-service";
-import ChatBox, { ChatContainer } from "./ChatBox";
 
 const convertBlob = async (blob:Blob) => {
   return new Promise<string | ArrayBuffer | null>((resolve) => {
