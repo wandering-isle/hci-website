@@ -54,7 +54,7 @@ const AudioRecorder: React.FC <{ onAddTranscription: (text: string) => void }> =
             const url = await convertBlob(blob);
             if (typeof url === "string") {
               setAudioUrl(url);
-
+              document.getElementById("audio")?.setAttribute("src",url);
               const { request } = createAudioService().post({ content: url });
               request.then((res) => {
                 onAddTranscription(res.data.content); // Add transcription to the beginning of the list

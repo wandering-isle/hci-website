@@ -5,7 +5,7 @@ import {getGptResonse }from './openaiService.js';
 
 import sdk from 'microsoft-cognitiveservices-speech-sdk' // audio->text
 
-const CORRECTIVE_CONTEXT = [{"role": "system", "content": "The following is a transcription of a person's speech. Correct any word that is blatantly incorrect"}]
+const CORRECTIVE_CONTEXT = [{"role": "system", "content": "This text was transcribed from speech. It may be imperfect, so correct any words that most likely were misheard. Make as few changes as possible. Do not say anything other than the corrected sentence."}]
 
 var counter = 0;
 
