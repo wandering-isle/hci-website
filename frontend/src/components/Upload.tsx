@@ -50,7 +50,7 @@ function Upload() {
     */
     <div
       id="upload_div"
-      className="flex flex-row items-center space-x-4 p-4 bg-white"
+      className="flex flex-row items-center space-x-4 p-4"
     >
       <label className="text-gray-700 font-medium">Upload a file:</label>
 
