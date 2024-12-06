@@ -118,57 +118,71 @@ app.post("/audio", async (req, res) => {
 // });
 
 app.post("/file", upload.single("file"), (req, res) => {
-	if (!req.file) {
-	  return res.status(400).send("No file uploaded.");
-	}
-  
-	const filePath = req.file.path; // The uploaded file's path
-	const fileType = req.file.mimetype; // The uploaded file's MIME type
-  
-	console.log("Uploaded file details:", req.file);
-	console.log("File MIME type:", fileType);
-  
-	// Handle Text Files
-	if (fileType === "text/plain" || fileType === "text/csv") {
-	  fs.readFile(filePath, "utf8", (err, data) => {
-		fs.unlinkSync(filePath); // Clean up the file
-		if (err) {
-		  console.error("Error reading text file:", err);
-		  return res.status(500).send("Error processing text file.");
-		}
-		res.json({ content: data });
-	  });
-	} 
-	// Handle Audio/WebM Files
-	else if (fileType === "audio/webm" || fileType === "video/webm" || fileType.startsWith("audio/")) {
-	  const wavPath = `${filePath}.wav`;
-	  ffmpeg(filePath)
-		.toFormat("wav")
-		.on("end", () => {
-		  fs.unlinkSync(filePath); // Clean up original file
-		  const wavFile = fs.readFileSync(wavPath);
-		  const wavBase64 = wavFile.toString("base64");
-		  const audio_url = `data:audio/wav;base64,${wavBase64}`;
-  
-		  // Use the audioToText function
-		  audioToText(audio_url, (text) => {
-			fs.unlinkSync(wavPath); // Clean up WAV file
-			res.json({ content: text });
-		  });
-		})
-		.on("error", (err) => {
-		  console.error("Error converting audio:", err);
-		  res.status(500).send("Error processing audio file.");
-		})
-		.save(wavPath);
-	} 
-	// Handle Unsupported File Types
-	else {
-	  console.error("Unsupported file type:", fileType);
-	  fs.unlinkSync(filePath); // Clean up unsupported files
-	  res.status(400).send(`Unsupported file type: ${fileType}`);
-	}
-  });
+    if (!req.file) {
+        return res.status(400).send("No file uploaded.");
+    }
+    const filePath = req.file.path; // The uploaded file's path
+    const fileType = req.file.mimetype; // The uploaded file's MIME type
+    console.log("Uploaded file details:", req.file);
+    console.log("File MIME type:", fileType);
+    // Handle Text Files
+    if (fileType === "text/plain" || fileType === "text/csv") {
+        fs.readFile(filePath, "utf8", async (err, data) => {
+            fs.unlinkSync(filePath); // Clean up the file
+            if (err) {
+                console.error("Error reading text file:", err);
+                return res.status(500).send("Error processing text file.");
+            }
+            // Send the text to GPT for correction
+            try {
+                const correctedResponse = await getCorrectiveResponse(data);
+                res.json({ content: correctedResponse });
+            } catch (error) {
+                console.error("Error processing corrective response:", error);
+                res.status(500).send("Error correcting text file.");
+            }
+        });
+    }
+    // Handle Audio/WebM Files
+    else if (
+        fileType === "audio/webm" ||
+        fileType === "video/webm" ||
+        fileType.startsWith("audio/")
+    ) {
+        const wavPath = `${filePath}.wav`;
+        ffmpeg(filePath)
+            .toFormat("wav")
+            .on("end", () => {
+                fs.unlinkSync(filePath); // Clean up original file
+                const wavFile = fs.readFileSync(wavPath);
+                const wavBase64 = wavFile.toString("base64");
+                const audio_url = `data:audio/wav;base64,${wavBase64}`;
+                // Use the audioToText function
+                audioToText(audio_url, async (text) => {
+                    fs.unlinkSync(wavPath); // Clean up WAV file
+                    // Pass the raw transcript to GPT for correction
+                    try {
+                        const correctedResponse = await getCorrectiveResponse(text);
+                        res.json({ content: correctedResponse });
+                    } catch (error) {
+                        console.error("Error processing corrective response:", error);
+                        res.status(500).send("Error correcting audio file.");
+                    }
+                });
+            })
+            .on("error", (err) => {
+                console.error("Error converting audio:", err);
+                res.status(500).send("Error processing audio file.");
+            })
+            .save(wavPath);
+    }
+    // Handle Unsupported File Types
+    else {
+        console.error("Unsupported file type:", fileType);
+        fs.unlinkSync(filePath); // Clean up unsupported files
+        res.status(400).send(`Unsupported file type: ${fileType}`);
+    }
+});
   
 // We define the port to listen on, and do so
 const port = process.env.PORT || 8080;
