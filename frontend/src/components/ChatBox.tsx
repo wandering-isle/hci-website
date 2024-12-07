@@ -6,6 +6,7 @@ import {
 } from "react-icons/ai";
 import { useState } from "react";
 
+// ChatContainer component to center and contain child components
 export const ChatContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex justify-center items-center">
@@ -14,6 +15,7 @@ export const ChatContainer = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// ChatBox component representing an individual chat message with edit, copy, and delete functionalities
 const ChatBox = ({
   text,
   index,
@@ -26,15 +28,17 @@ const ChatBox = ({
   const [isEditing, setIsEditing] = useState(false); // Track editing mode
   const [currentText, setCurrentText] = useState(text); // Track current text value
 
+  // Function to enable editing mode
   const handleEdit = () => {
     setIsEditing(true); // Enter editing mode
   };
 
+  // Function to disable editing mode and save changes
   const handleSave = () => {
     setIsEditing(false); // Exit editing mode
-    // Optionally: Save changes to a server or parent state
   };
 
+  // Function to handle deletion of a chat by calling the provided callback
   const handleDelete = (index: number) => {
     onDeleteChat(index);
   };
@@ -54,6 +58,8 @@ const ChatBox = ({
           {currentText}
         </span>
       )}
+
+      {/* Container for action buttons: Copy, Edit/Save, and Delete */}
       <div className="flex flex-row space-x-3">
         {/* Copy Button */}
         <button
@@ -64,7 +70,7 @@ const ChatBox = ({
           <AiOutlineCopy size={20} />
         </button>
 
-        {/* Edit or Save Button */}
+        {/* Edit or Save Button - toggles between edit and save modes */}
         {isEditing ? (
           <button
             className="w-10 h-10 rounded-full bg-green-500 text-white shadow-lg flex justify-center items-center hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"

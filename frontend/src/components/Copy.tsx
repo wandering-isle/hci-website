@@ -1,13 +1,16 @@
+// Copy component to copy multiple transcriptions to the clipboard
 function Copy({ transcriptions }: { transcriptions: string[] }) {
 
+  // Function to handle copying transcriptions to the clipboard
   const copyTextBoxes = () => {
     // Combine all transcriptions into a single string with line breaks
     const textToCopy = transcriptions.join("\n");
 
-    // Copy the combined string to the clipboard
+    // Use the Clipboard API to copy the combined string to the clipboard
     navigator.clipboard
       .writeText(textToCopy)
       .then(() => {
+        // Alert the user on successful copy
         alert("Transcriptions copied to clipboard!");
       })
       .catch((error) => {
