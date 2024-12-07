@@ -1,26 +1,9 @@
 import "./App.css";
 
-
-import Upload from "./components/Upload";
-import Copy from "./components/Copy";
-import AudioRecorder from "./components/AudioRecorder";
 import Integration from "./components/Integration";
-
-import useImage from "./hooks/useImage";
-import useText from "./hooks/useText";
 import { KeyboardEvent, useEffect } from "react";
 
-import ChatBox, { ChatContainer } from "./components/ChatBox";
-
 function App() {
-  const { image, imgError, imgIsLoading } = useImage("");
-  const { text, textError, textIsLoading } = useText("", "chatroom-image");
-
-  useEffect(() => {
-    console.log(text);
-  }, [text]);
-
-
   // Function for on key press
   // Start/Stop Audio Recording
   let keyPress = (event:KeyboardEvent) => {
@@ -37,19 +20,14 @@ function App() {
     } 
   }
     
-
   // Set it to only activate once per key press
   useEffect(() => {
     document.addEventListener("keydown", keyPress);
     return () => document.removeEventListener("keydown", keyPress);
   });
 
-  
-
-
   return (
     <div>
-      {(imgIsLoading || textIsLoading) && <div className="spinner-border" />}
       <Integration />
     </div>
   );

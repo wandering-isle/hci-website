@@ -2,11 +2,10 @@ import Upload from "./Upload";
 import Copy from "./Copy";
 import AudioRecorder from "./AudioRecorder";
 import ChatBox, {ChatContainer} from "./ChatBox";
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 
 
 function Integration() {
-    const mediaRecorderRef = useRef<RecordRTC | null>(null);
 
     const [transcriptions, setTranscriptions] = useState<string[]>([]);
 
