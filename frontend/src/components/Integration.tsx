@@ -11,7 +11,7 @@ function Integration() {
 
     const handleAddTranscription = (newTranscription: string) => {
       setTranscriptions((prev) => {
-        const updated = [newTranscription, ...prev];
+        const updated = [...prev, newTranscription];
         return updated;
       });
     };
