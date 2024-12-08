@@ -1,7 +1,7 @@
 import { ChangeEvent, useState, useRef } from "react";
 import { AiOutlineFileAdd } from "react-icons/ai";
 
-function Upload() {
+const Upload: React.FC <{ onAddTranscription: (text: string) => void }> = ({ onAddTranscription }) => {
   const [file, setFile] = useState<File | null>(null); // Track selected file
   const [responseText, setResponseText] = useState<string>(""); // Track server response
   const uploadRef = useRef<HTMLInputElement | null>(null);
@@ -39,7 +39,7 @@ function Upload() {
   
       const data = await response.json();
       console.log("File uploaded successfully:", data);
-      setResponseText(data.content);
+      onAddTranscription(data.content);
     } catch (error) {
       console.error("Error uploading file:", error);
       alert(`An error occurred while uploading the file: ${error.message}`);

@@ -47,7 +47,7 @@ function Integration() {
       </div>
       <div style={{ display: "flex", justifyContent: "space-evenly", gap: "16px" }}>
         {/* Adds horizontal spacing between Upload and Copy */}
-        <Upload />
+        <Upload onAddTranscription={handleAddTranscription}/>
         <Copy transcriptions={transcriptions}/>
       </div>
     </div>
