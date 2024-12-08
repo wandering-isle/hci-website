@@ -40,7 +40,7 @@ const Upload: React.FC <{ onAddTranscription: (text: string) => void }> = ({ onA
       const data = await response.json();
       console.log("File uploaded successfully:", data);
       onAddTranscription(data.content);
-    } catch (error) {
+    } catch (error:any) {
       console.error("Error uploading file:", error);
       alert(`An error occurred while uploading the file: ${error.message}`);
     }
