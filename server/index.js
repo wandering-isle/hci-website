@@ -30,22 +30,29 @@ app.use(cors(corsOptions));
 
 
 async function getCorrectiveResponse(text) {
+	// Construct list of messages by adding the text to be corrected and the instructions for correction.
 	const newMessages = [...CORRECTIVE_CONTEXT,
  		{role: "user", content: text}
 	]
+	// Get GPT response
 	const response = await getGptResonse(newMessages);
-	console.log(response.choices[0].message);
+
 	return response.choices[0].message.content;
 }
 
 const speechConfig = sdk.SpeechConfig.fromSubscription("8186be822a5d456f9653c5f5303f055d", "eastus");
 
 const audioToText = async(audio_url, callback) => {
-	//console.log("audio called");
+	/**
+	 * Converts audio-urls to text files. 
+	 * 		audio_url: The text-based WAV audio url
+	 * 		callback: The function that should be run upon conversion
+	 */
 
-	counter += 1;
-	let cur_count = counter;
+	counter += 1; // File counter to avoid asynchronous calls from overwriting each other's files.
+	let cur_count = counter; // I do *NOT* want to figure out locking for JS, so this is the next-best thing
 	var b64_audio = audio_url.replace("data:audio/wav;base64,", "");
+
 	// Write the audio to a file
 	fs.writeFileSync("audio_out_"+cur_count+".wav", b64_audio, 'base64', function(err) {
 		console.log(err);
@@ -56,13 +63,20 @@ const audioToText = async(audio_url, callback) => {
 	let audioConfig = sdk.AudioConfig.fromWavFileInput(fs.readFileSync("audio_out_"+cur_count+".wav"));
 	let speechRecognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
 	console.log("starting recog");
+
+
+	// Here's why we use a callback function.
+	// Trying to resolve the asynchronous function breaks recognizeOnceAsync
 	speechRecognizer.recognizeOnceAsync(async result => {
-		fs.unlinkSync("audio_out_"+cur_count+".wav");
+		// Delete the audio file after reading it in.
+		fs.unlinkSync("audio_out_"+cur_count+".wav"); 
 		console.log("Recog done");
+
+		// Based on result of speech recognizer, behave differently
 		switch (result.reason) {
 			case sdk.ResultReason.RecognizedSpeech:
 				// If success:
-				console.log(`RECOGNIZED: Text=${result.text}`);
+				console.log(`RECOGNIZED.`); // Removed {text} logging for privacy reasons 
 				callback(result.text);
 				break;
 			// For all other cases, don't return a proper response.
@@ -71,6 +85,7 @@ const audioToText = async(audio_url, callback) => {
 				callback("No match.");
 				break;
 			case sdk.ResultReason.Canceled:
+				// Most useful when verifying API key
 				const cancellation = sdk.CancellationDetails.fromResult(result);
 				console.log(`CANCELED: Reason=${cancellation.reason}`);
 	
@@ -88,13 +103,16 @@ const audioToText = async(audio_url, callback) => {
 
 };
 
-// The actual post request for image and audio GPT processing
+// The actual post request for audio and GPT processing
 app.post("/audio", async (req, res) => {
 	
 	if (req.body.params.content) {
+		
+		// After converting audio to text
 		let callback = async (text) => {
-			console.log(text);
+			// Correct the text with GPT
 			let reply = await getCorrectiveResponse(text);
+			// Send a response
 			res.send({"content":reply})
 		}
 

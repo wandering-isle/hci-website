@@ -10,6 +10,10 @@ function Integration() {
     const [transcriptions, setTranscriptions] = useState<string[]>([]);
 
     const handleAddTranscription = (newTranscription: string) => {
+      /**
+       * Allows the creation of new transcription boxes between different React elements
+       *  newTranscription: The text to be added to the transcription.
+       */
       setTranscriptions((prev) => {
         const updated = [...prev, newTranscription];
         return updated;
@@ -17,21 +21,18 @@ function Integration() {
     };
 
     const handleDeleteTranscription = (index: number) => {
+      /**
+       * Deletes a transcription textbox.
+       */
       setTranscriptions((prev) => prev.filter((_, i) => i !== index));
     };
 
-    // TODO: On audio stop, send audio request
-    // TODO: When get audio request, add chatbox
-    // TODO: When file uploaded, send file request
-    // TODO: When file request, add chatbox
-
-    // https://stackoverflow.com/questions/21285923/how-can-i-communicate-between-related-react-components
     return (
       // Creates a button that copies the ChatBox content.
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Adds vertical spacing between components */}
       <div>
-        <AudioRecorder onAddTranscription={handleAddTranscription} />
+        <AudioRecorder onAddTranscription={handleAddTranscription} /> 
       </div>
       <div>
         <ChatContainer>
